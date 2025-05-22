@@ -78,7 +78,7 @@ export class CardsService {
       if (!this.file.endsWith("\n")) {
         this.file += "\n";
       }
-      globalTags = this.parseGlobalTags(this.file);
+      globalTags = this.parseGlobalTags(fileCachedMetadata); // 修正 1.9.0 
       // TODO with empty check that does not call ankiCards line
       const ankiBlocks = this.parser.getAnkiIDsBlocks(this.file);
       const ankiCards = ankiBlocks
@@ -381,11 +381,11 @@ export class CardsService {
     return ids;
   }
 
-  public parseGlobalTags(file: string): string[] {
-    let globalTags: string[] = [];
+  public parseGlobalTags(fileCachedMetadata: string): string[] {
+    let globalTags: string[] = file.frontmatter.tags; // 修复更新到1.9.0时，强制到tags内容
 
-    const tags = file.match(/(?:cards-)?tags: ?(.*)/im);
-    globalTags = tags ? tags[1].match(this.regex.globalTagsSplitter) : [];
+    // const tags = file.match(/(?:cards-)?tags: ?(.*)/im);
+    // globalTags = tags ? tags[1].match(this.regex.globalTagsSplitter) : [];
 
     if (globalTags) {
       for (let i = 0; i < globalTags.length; i++) {
